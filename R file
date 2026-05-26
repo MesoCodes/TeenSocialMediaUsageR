@@ -1,0 +1,30 @@
+# Is there a statistical difference in daily social media usage between teens?
+
+#Reading file
+teenmh <- read.csv("file:///Users/meso_alexis/Downloads/Teen_Mental_Health.csv")
+
+#Loading dplyr package
+library(dplyr)
+
+#Selecting necessary columns only
+teenmhnew <- teenmh %>% select(-gender, -platform_usage, -sleep_hours, 
+                               -screen_time_before_sleep, -academic_performance,
+                               -physical_activity, -social_interaction_level,
+                               -stress_level, -anxiety_level, -addiction_level, 
+                               -depression_label, -mental_health_risk_score, 
+                               -sleep_quality, -digital_wellbeing_flag)
+teenmh_sorted <- teenmhnew %>% arrange(age)
+teenmh_sorted
+
+#Separating columns out of data frame to be able to be inputted into ANOVA
+age <- c(teenmh_sorted$age)
+dsmh <- c(teenmh_sorted$daily_social_media_hours)
+
+#Boxplot for visual observation
+boxplot(dsmh ~ age, data = teenmh_sorted)
+
+#ANOVA
+teenmh.anova <- aov(dsmh ~ age, data=teenmh_sorted)
+summary(teenmh.anova)
+print("We fail to reject our null hypothesis. There is no statistical difference
+      in daily social media hours usage between teens ages 13-19.")
